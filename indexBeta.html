@@ -56,12 +56,26 @@
 			
 			$(document).ready(function() { 
 				//$.mobile.loading().hide();
-				<!-- loadAllSound(); -->
+				loadAllSound();
 				
-				//HELP_TIMER = setInterval('blinkHelp()', HELP_DELAY);
-				GROUP_SOUND.mute();
+				HELP_TIMER = setInterval('blinkHelp()', HELP_DELAY);
 				
-				initGame(true);			
+				initHome();
+				
+				$(".sound").click(function(e) { 
+					e.stopPropagation();
+					
+					var sound = $(this).attr("data-sound");
+					if ( sound === "on" ) { 
+						$(".sound").attr("data-sound", "off");
+						$(".sound").find("img").attr("src", "img/sound-off.png");
+						GROUP_SOUND.mute();
+					} else { 
+						$(".sound").attr("data-sound", "on");
+						$(".sound").find("img").attr("src", "img/sound-on.png");
+						GROUP_SOUND.unmute();
+					}
+				});
 				
 				$(".help-button, #help").click(function(e) { 
 					e.stopPropagation();
@@ -132,23 +146,19 @@
 								eraseGhosts();
 								resetGhosts();
 								drawGhosts();
-								// moveGhost();
+								moveGhosts();
 								
 								blinkSuperBubbles();
 								
 							} else if (e.keyCode >= 37 && e.keyCode <= 40 && !PAUSE && !PACMAN_DEAD && !LOCK) { 
 								if ( e.keyCode === 39 ) { 
 									movePacman(1);
-									moveGhost(1);
 								} else if ( e.keyCode === 40 ) { 
 									movePacman(2);
-									moveGhost(2);
 								} else if ( e.keyCode === 37 ) { 
 									movePacman(3);
-									moveGhost(3);
 								} else if ( e.keyCode === 38 ) { 
 									movePacman(4);
-									moveGhost(4);
 								}
 							} else if (e.keyCode === 68 && !PAUSE) { 
 								/*if ( $("#canvas-paths").css("display") === "none" ) { 
@@ -176,7 +186,7 @@
 		
 	<body>
 	
-		<!-- <div id="sound"></div> -->
+		<div id="sound"></div>
 	
 		<div id="help">
 			<h2>Help</h2>
@@ -193,23 +203,26 @@
 		</div>
 	
 		<div id="home">
-			<!-- <h1>pac-man</h1>
-			<h3>Lucio PANEPINTO<br><em>2015</em></h3> -->
+			<h1>pac-man</h1>
+			<h3>Lucio PANEPINTO<br><em>2015</em></h3>
 			<canvas id="canvas-home-title-pacman"></canvas>
-			<!-- <div id="presentation">
+			<div id="presentation">
 				<div id="presentation-titles">character &nbsp;/&nbsp; nickname</div>
 				<canvas id="canvas-presentation-blinky"></canvas><div id="presentation-character-blinky">- shadow</div><div id="presentation-name-blinky">"blinky"</div>
 				<canvas id="canvas-presentation-pinky"></canvas><div id="presentation-character-pinky">- speedy</div><div id="presentation-name-pinky">"pinky"</div>
 				<canvas id="canvas-presentation-inky"></canvas><div id="presentation-character-inky">- bashful</div><div id="presentation-name-inky">"inky"</div>
 				<canvas id="canvas-presentation-clyde"></canvas><div id="presentation-character-clyde">- pokey</div><div id="presentation-name-clyde">"clyde"</div>
-			</div> -->
-			<!-- <canvas id="trailer"></canvas> -->
-			<!-- <div class="help-button">- help -</div> -->
-			<!-- <a class="sound" href="javascript:void(0);" data-sound="on"><img src="img/sound-on.png" alt="" border="0"></a> -->
+			</div>
+			<canvas id="trailer"></canvas>
+			<div class="help-button">- help -</div>
+			<a class="sound" href="javascript:void(0);" data-sound="on"><img src="img/sound-on.png" alt="" border="0"></a>
+			<a class="github" target="_blank" href="https://github.com/luciopanepinto/pacman"><img src="img/github.png" alt="GitHub - Lucio PANEPINTO - Pac-Man"></a>
+			<a class="putchu" target="_top" href="http://www.putchu.be"><img src="http://www.putchu.be/img/intro/player.png" height="95px" alt="Putchu">www.putchu.be</a>
 		</div>
 	
 		<div id="panel">
 			<h1>pac-man</h1>
+			<a class="putchu" target="_top" href="http://www.putchu.be"><img src="http://www.putchu.be/img/intro/player.png" height="65px" alt="Putchu">www.putchu.be</a>
 			<canvas id="canvas-panel-title-pacman"></canvas>
 			<div id="score"><h2>1UP</h2><span>00</span></div>
 			<div id="highscore"><h2>High Score</h2><span>00</span></div>
@@ -239,6 +252,8 @@
 			<canvas id="canvas-lifes"></canvas>
 			<canvas id="canvas-level-fruits"></canvas>
 			<div id="message"></div>
+			<div class="help-button">- help -</div>
+			<a class="sound" href="javascript:void(0);" data-sound="on"><img src="img/sound-on.png" alt="" border="0"></a>
 		</div>
 	
 	</body>

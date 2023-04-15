@@ -277,25 +277,22 @@ function killingPacman() {
 }
 
 function testGhostsPacman() { 
-	testGhostPacman();
-	// testGhostPacman('blinky');
-	// testGhostPacman('pinky');
-	// testGhostPacman('inky');
-	// testGhostPacman('clyde');
+	testGhostPacman('blinky');
+	testGhostPacman('pinky');
+	testGhostPacman('inky');
+	testGhostPacman('clyde');
 
 }
-function testGhostPacman() { 
-	var positionX = GHOST_BLINKY_POSITION_X
-	var positionY = GHOST_BLINKY_POSITION_Y
-	// eval('var positionX = GHOST_BLINKY_POSITION_X');
-	// eval('var positionY = GHOST_BLINKY_POSITION_Y');
+function testGhostPacman(ghost) { 
+	eval('var positionX = GHOST_' + ghost.toUpperCase() + '_POSITION_X');
+	eval('var positionY = GHOST_' + ghost.toUpperCase() + '_POSITION_Y');
 		
 	if (positionX <= PACMAN_POSITION_X + PACMAN_GHOST_GAP && positionX >= PACMAN_POSITION_X - PACMAN_GHOST_GAP && positionY <= PACMAN_POSITION_Y + PACMAN_GHOST_GAP && positionY >= PACMAN_POSITION_Y - PACMAN_GHOST_GAP ) { 
-		var state = GHOST_BLINKY_STATE
+		eval('var state = GHOST_' + ghost.toUpperCase() + '_STATE');
 		if (state === 0) { 
 			killPacman();
 		} else if (state === 1) { 
-			startEatGhost();
+			startEatGhost(ghost);
 		}
 	}
 }
@@ -331,7 +328,7 @@ function testBubblesPacman() {
 					setSuperBubbleOnXY( testX, testY, "1" );
 					score( SCORE_SUPER_BUBBLE );
 					playEatPillSound();
-					afraidGhosts();
+					affraidGhosts();
 				} else { 
 					score( SCORE_BUBBLE );
 					playEatingSound();
