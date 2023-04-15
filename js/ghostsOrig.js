@@ -256,8 +256,8 @@ function cancelEatGhost(ghost) {
 
 function moveGhosts() { 
 	moveGhost("blinky");
-	moveGhost('pinky');
-	moveGhost('inky');
+	moveGhost("pinky");
+	moveGhost("inky");
 	moveGhost("clyde");
 }
 function moveGhost(ghost) {

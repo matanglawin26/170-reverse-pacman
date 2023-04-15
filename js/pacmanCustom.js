@@ -331,7 +331,7 @@ function testBubblesPacman() {
 					setSuperBubbleOnXY( testX, testY, "1" );
 					score( SCORE_SUPER_BUBBLE );
 					playEatPillSound();
-					affraidGhosts();
+					afraidGhosts();
 				} else { 
 					score( SCORE_BUBBLE );
 					playEatingSound();

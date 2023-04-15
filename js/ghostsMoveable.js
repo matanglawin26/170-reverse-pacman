@@ -16,6 +16,7 @@ var GHOST_BLINKY_DIRECTION_TRY = -1;
 var GHOST_BLINKY_DIRECTION_TRY_TIMER = null;
 var GHOST_BLINKY_DIRECTION_TRY_CANCEL = 1000;
 
+
 var GHOST_PINKY_CANVAS_CONTEXT = null;
 var GHOST_PINKY_POSITION_X = 276;
 var GHOST_PINKY_POSITION_Y = 258;
@@ -63,7 +64,7 @@ var GHOST_AFFRAID_FINISH_COLOR = "#fff";
 var GHOST_POSITION_STEP = 2;
 var GHOST_MOVING_SPEED = 15;
 var GHOST_TUNNEL_MOVING_SPEED = 35;
-var GHOST_AFFRAID_MOVING_SPEED = 40;
+var GHOST_AFRAID_MOVING_SPEED = 40;
 var GHOST_EAT_MOVING_SPEED = 6;
 var GHOST_AFFRAID_TIME = 8500;
 var GHOST_EAT_TIME = 5500;
@@ -80,7 +81,7 @@ function initGhost(ghost) {
 	canvas.setAttribute('width', '550');
 	canvas.setAttribute('height', '550');
 	if (canvas.getContext) { 
-		eval('GHOST_' + ghost.toUpperCase() + '_CANVAS_CONTEXT = canvas.getContext("2d")');
+		eval('GHOST_BLINKY_CANVAS_CONTEXT = canvas.getContext("2d")');
 	}
 }
 function resetGhosts() { 
@@ -131,7 +132,7 @@ function resetGhosts() {
 	GHOST_CLYDE_AFFRAID_STATE = 0;
 }
 function getGhostCanevasContext(ghost) { 
-	return eval('GHOST_' + ghost.toUpperCase() + '_CANVAS_CONTEXT');
+	return eval('GHOST_BLINKY_CANVAS_CONTEXT');
 }
 
 function drawGhosts() { 
@@ -140,56 +141,56 @@ function drawGhosts() {
 	// drawGhost('inky');
 	// drawGhost("clyde");
 }
-function drawGhost(ghost) { 
+function drawGhost() { 
 
-	var ctx = getGhostCanevasContext(ghost);
+	var ctx = getGhostCanevasContext("blinky");
 	
-	if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === 0')) { 
-		eval('ctx.fillStyle = GHOST_' + ghost.toUpperCase() + '_COLOR');
+	if (GHOST_BLINKY_STATE === 0) { 
+		eval('ctx.fillStyle = GHOST_BLINKY_COLOR');
 	} else { 
-		if (eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_STATE === 1')) { 
+		if (GHOST_BLINKY_AFFRAID_STATE === 1) { 
 			eval('ctx.fillStyle = GHOST_AFFRAID_FINISH_COLOR');
 		} else { 
 			eval('ctx.fillStyle = GHOST_AFFRAID_COLOR');
 		}
 	}
-	eval('drawHelperGhost(ctx, GHOST_' + ghost.toUpperCase() + '_POSITION_X, GHOST_' + ghost.toUpperCase() + '_POSITION_Y, GHOST_' + ghost.toUpperCase() + '_DIRECTION, GHOST_' + ghost.toUpperCase() + '_BODY_STATE, GHOST_' + ghost.toUpperCase() + '_STATE, GHOST_' + ghost.toUpperCase() + '_AFFRAID_STATE)');
+	eval('drawHelperGhost(ctx, GHOST_BLINKY_POSITION_X, GHOST_BLINKY_POSITION_Y, GHOST_BLINKY_DIRECTION, GHOST_BLINKY_BODY_STATE, GHOST_BLINKY_STATE, GHOST_BLINKY_AFFRAID_STATE)');
 	
 	ctx.closePath();
 	
 	
 }
 
-function affraidGhosts() { 
+function afraidGhosts() { 
 	
 	playWazaSound();
 	
 	SCORE_GHOST_COMBO = 200;
 
-	affraidGhost("blinky");
-	// affraidGhost("pinky");
-	// affraidGhost("inky");
-	// affraidGhost("clyde");
+	afraidGhost("blinky");
+	// afraidGhost("pinky");
+	// afraidGhost("inky");
+	// afraidGhost("clyde");
 }
-function affraidGhost(ghost) { 
-	if ( eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER !== null') ) { 
-		eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER.cancel()');
-		eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER = null');
+function afraidGhost(ghost) { 
+	if ( eval('GHOST_BLINKY_AFFRAID_TIMER !== null') ) { 
+		eval('GHOST_BLINKY_AFFRAID_TIMER.cancel()');
+		eval('GHOST_BLINKY_AFFRAID_TIMER = null');
 	}
-	eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_STATE = 0');
-	if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === 0') || eval('GHOST_' + ghost.toUpperCase() + '_STATE === 1')) { 
+	eval('GHOST_BLINKY_AFFRAID_STATE = 0');
+	if (eval('GHOST_BLINKY_STATE === 0') || eval('GHOST_BLINKY_STATE === 1')) { 
 		stopGhost(ghost);
-		eval('GHOST_' + ghost.toUpperCase() + '_STATE = 1');
+		eval('GHOST_BLINKY_STATE = 1');
 		moveGhost(ghost);
-		eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER = new Timer("cancelAffraidGhost(\'' + ghost + '\')", GHOST_AFFRAID_TIME)');
+		eval('GHOST_BLINKY_AFFRAID_TIMER = new Timer("cancelAfraidGhost(\'' + ghost + '\')", GHOST_AFFRAID_TIME)');
 	}
 }
-function cancelAffraidGhost(ghost) { 
-	if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === 1')) { 
-		eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER.cancel()');
-		eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER = null');
+function cancelAfraidGhost(ghost) { 
+	if (eval('GHOST_BLINKY_STATE === 1')) { 
+		eval('GHOST_BLINKY_AFFRAID_TIMER.cancel()');
+		eval('GHOST_BLINKY_AFFRAID_TIMER = null');
 		stopGhost(ghost);
-		eval('GHOST_' + ghost.toUpperCase() + '_STATE = 0');
+		eval('GHOST_BLINKY_STATE = 0');
 		moveGhost(ghost);
 		testStateGhosts();
 	}
@@ -220,9 +221,9 @@ function startEatGhost(ghost) {
 
 		LOCK = true;
 		
-		if ( eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER !== null') ) { 
-			eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER.cancel()');
-			eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER = null');
+		if ( eval('GHOST_BLINKY_AFFRAID_TIMER !== null') ) { 
+			eval('GHOST_BLINKY_AFFRAID_TIMER.cancel()');
+			eval('GHOST_BLINKY_AFFRAID_TIMER = null');
 		}
 		
 		score(SCORE_GHOST_COMBO, ghost);
@@ -238,24 +239,31 @@ function eatGhost(ghost) {
 
 	playGhostEatenSound();
 	
-	if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === 1')) { 
+	if (eval('GHOST_BLINKY_STATE === 1')) { 
 		$("#board span.combo").remove();
-		eval('GHOST_' + ghost.toUpperCase() + '_STATE = -1');
-		eval('GHOST_' + ghost.toUpperCase() + '_EAT_TIMER = new Timer("cancelEatGhost(\'' + ghost + '\')", GHOST_EAT_TIME)');
-		eval('GHOST_' + ghost.toUpperCase() + '_EAT_TIMER.pause()');
+		eval('GHOST_BLINKY_STATE = -1');
+		eval('GHOST_BLINKY_EAT_TIMER = new Timer("cancelEatGhost(\'' + ghost + '\')", GHOST_EAT_TIME)');
+		eval('GHOST_BLINKY_EAT_TIMER.pause()');
 	}
 	resumeGhosts();
 	resumePacman();
 	LOCK = false;
 }
 function cancelEatGhost(ghost) { 
-	if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === -1')) { 
-		eval('GHOST_' + ghost.toUpperCase() + '_EAT_TIMER = null');
+	if (eval('GHOST_BLINKY_STATE === -1')) { 
+		eval('GHOST_BLINKY_EAT_TIMER = null');
 		stopGhost(ghost);
-		eval('GHOST_' + ghost.toUpperCase() + '_STATE = 0');
+		eval('GHOST_BLINKY_STATE = 0');
 		moveGhost(ghost);
 		testStateGhosts();
 	}
+}
+
+function moveGhosts() { 
+	moveGhost();
+	// moveGhost('pinky');
+	// moveGhost('inky');
+	// moveGhost("clyde");
 }
 
 function tryMoveGhost(direction) { 
@@ -271,52 +279,159 @@ function tryMoveGhostCancel() {
 	}
 }
 
-function moveGhosts() { 
-	moveGhost(1);
-	// moveGhost("pinky");
-	// moveGhost("inky");
-	// moveGhost("clyde");
-}
 function moveGhost(direction) {
-	let ghost = 'blinky';
-	if (eval('GHOST_' + ghost.toUpperCase() + '_MOVING === false')) { 
-		eval('GHOST_' + ghost.toUpperCase() + '_MOVING = true;');
+	let ghost = 'BLINKY';
+	if (GHOST_BLINKY_MOVING === false) { 
+		GHOST_BLINKY_MOVING = true;
 
 		var speed = -1;
-		if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === 1')) { 
-			speed =  GHOST_AFFRAID_MOVING_SPEED;
-		} else if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === 0')) { 
-			if (eval('GHOST_' + ghost.toUpperCase() + '_TUNNEL === false')) { 
-				speed =  GHOST_MOVING_SPEED;
+		if (GHOST_BLINKY_STATE === 1) { 
+			speed =  GHOST_AFRAID_MOVING_SPEED;
+		} else if (GHOST_BLINKY_STATE === 0) { 
+			if (GHOST_BLINKY_TUNNEL === false) { 
+				speed =  GHOST_BLINKY_MOVING;
 			} else { 
 				speed =  GHOST_TUNNEL_MOVING_SPEED;
 			}
 		} else { 
 			speed =  GHOST_EAT_MOVING_SPEED;
 		}
-		eval('GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER = setInterval("moveGhost(\'' + ghost + '\')", ' + GHOST_MOVING_SPEED + ');');
-		// eval('GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER = setInterval("moveGhost(\'' + ghost + '\')", ' + speed + ');');
+		GHOST_BLINKY_MOVING_TIMER = setInterval('moveGhost()', GHOST_BLINKY_MOVING_SPEED);
+		// GHOST_BLINKY_MOVING = true;
+		// drawGhost();
+		// GHOST_BLINKY_MOVING_TIMER = setInterval('moveGhost()', GHOST_BLINKY_MOVING_SPEED);
+	} 
+	else {
+	
+	var directionTry = direction;
+	var quarterChangeDirection = false;
+	
+	if (!directionTry && GHOST_BLINKY_DIRECTION_TRY != -1) { 
+		directionTry = GHOST_BLINKY_DIRECTION_TRY;
+	}
+
+	if ( eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER !== null')) { 
+		var remain = eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER.remain();');
+		if ((remain >= 2500 && remain < 3000) || (remain >= 1500 && remain <= 2000) || (remain >= 500 && remain <= 1000) || (remain < 0)) { 
+			eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_STATE = 1;')
+		} else if ((remain > 2000 && remain < 2500) || (remain > 1000 && remain < 1500) || (remain >= 0 && remain < 500)) { 
+			eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_STATE = 0;')
+		}
+	}
+	
+	if ((!directionTry || GHOST_BLINKY_DIRECTION !== directionTry)) { 
+	
+		if (directionTry) { 
+			if (canMoveGhost(directionTry)) { 
+				if (GHOST_BLINKY_DIRECTION + 1 === directionTry || GHOST_BLINKY_DIRECTION - 1 === directionTry || GHOST_BLINKY_DIRECTION + 1 === directionTry || (GHOST_BLINKY_DIRECTION === 4 && directionTry === 1) || (GHOST_BLINKY_DIRECTION === 1 && directionTry === 4) ) { 
+					quarterChangeDirection = true;
+				}
+				GHOST_BLINKY_DIRECTION = directionTry;
+				tryMoveGhostCancel();
+			} else { 
+				if (directionTry !== GHOST_BLINKY_DIRECTION_TRY) { 
+					tryMoveGhostCancel();
+				}
+				if (GHOST_BLINKY_DIRECTION_TRY === -1) { 
+					tryMoveGhost(directionTry);
+				}
+			}
+		}
+
+		if (canMoveGhost(GHOST_BLINKY_DIRECTION)) { 
+			eraseGhost();
+			
+			// if (PACMAN_MOUNTH_STATE < PACMAN_MOUNTH_STATE_MAX) { 
+			// 	PACMAN_MOUNTH_STATE ++; 
+			// } else { 
+			// 	PACMAN_MOUNTH_STATE = 0; 
+			// }
+						
+			var speedUp = 0;
+			if (quarterChangeDirection) { 
+				speedUp = 6;
+			}
+			
+			if ( GHOST_BLINKY_DIRECTION === 1 ) { 
+				GHOST_BLINKY_POSITION_X += GHOST_POSITION_STEP + speedUp;
+			} else if ( GHOST_BLINKY_DIRECTION === 2 ) { 
+				GHOST_BLINKY_POSITION_Y += GHOST_POSITION_STEP + speedUp;
+			} else if ( GHOST_BLINKY_DIRECTION === 3 ) { 
+				GHOST_BLINKY_POSITION_X -= GHOST_POSITION_STEP + speedUp;
+			} else if ( GHOST_BLINKY_DIRECTION === 4 ) { 
+				GHOST_BLINKY_POSITION_Y -= (GHOST_POSITION_STEP + speedUp);
+			}
+			
+			if ( GHOST_BLINKY_POSITION_X === 2 && GHOST_BLINKY_POSITION_Y === 258 ) { 
+				GHOST_BLINKY_POSITION_X = 548;
+				GHOST_BLINKY_POSITION_Y = 258;
+			} else if ( GHOST_BLINKY_POSITION_X === 548 && GHOST_BLINKY_POSITION_Y === 258 ) { 
+				GHOST_BLINKY_POSITION_X = 2;
+				GHOST_BLINKY_POSITION_Y = 258;
+			}
+			
+			drawGhost();
+			
+			if (GHOST_BLINKY_BODY_STATE === 3 && GHOST_BLINKY_STATE != -1) { 
+				if ( !PACMAN_MOVING ) { 
+					testGhostPacman();
+				}
+				testGhostTunnel();
+			}
+
+			// if ((PACMAN_MOUNTH_STATE) === 0 || (PACMAN_MOUNTH_STATE) === 3) { 
+			// 	testBubblesPacman();
+			// 	testGhostsPacman();
+			// 	testFruitsPacman();
+			// }
+		} else { 
+			stopGhost()
+		}
+	} else if (direction && GHOST_BLINKY_DIRECTION === direction) { 
+		tryMoveGhostCancel();
+	}
+}
+}
+
+function moveGhostBeta(direction) {
+
+	if (GHOST_BLINKY_MOVING === false) { 
+		GHOST_BLINKY_MOVING = true;
+
+		var speed = -1;
+		if (GHOST_BLINKY_STATE === 1) { 
+			speed =  GHOST_AFRAID_MOVING_SPEED;
+		} else if (GHOST_BLINKY_STATE === 0) { 
+			if (GHOST_BLINKY_TUNNEL === false) { 
+				speed =  GHOST_BLINKY_MOVING;
+			} else { 
+				speed =  GHOST_TUNNEL_MOVING_SPEED;
+			}
+		} else { 
+			speed =  GHOST_EAT_MOVING_SPEED;
+		}
+		eval('GHOST_BLINKY_MOVING_TIMER = setInterval("moveGhost(\'' + direction + '\')", ' + speed + ');');
 	} else { 
+	
 		var directionTry = direction;
 		var quarterChangeDirection = false;
-		
+
 		if (!directionTry && GHOST_BLINKY_DIRECTION_TRY != -1) { 
 			directionTry = GHOST_BLINKY_DIRECTION_TRY;
 		}
-		// changeDirection(ghost);
-		
-		if ( eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER !== null')) { 
-			var remain = eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER.remain();');
+
+		if (GHOST_BLINKY_AFFRAID_TIMER !== null) { 
+			var remain = eval('GHOST_BLINKY_AFFRAID_TIMER.remain();');
 			if ((remain >= 2500 && remain < 3000) || (remain >= 1500 && remain <= 2000) || (remain >= 500 && remain <= 1000) || (remain < 0)) { 
-				eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_STATE = 1;')
+				eval('GHOST_BLINKY_AFFRAID_STATE = 1;')
 			} else if ((remain > 2000 && remain < 2500) || (remain > 1000 && remain < 1500) || (remain >= 0 && remain < 500)) { 
-				eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_STATE = 0;')
+				eval('GHOST_BLINKY_AFFRAID_STATE = 0;')
 			}
 		}
-		
+		// changeDirection(ghost);
 		if ((!directionTry || GHOST_BLINKY_DIRECTION !== directionTry)) {
 			if (directionTry) { 
-				if (canMoveGhost(ghost, directionTry)) { 
+				if (canMovePacman(directionTry)) { 
 					if (GHOST_BLINKY_DIRECTION + 1 === directionTry || GHOST_BLINKY_DIRECTION - 1 === directionTry || GHOST_BLINKY_DIRECTION + 1 === directionTry || (GHOST_BLINKY_DIRECTION === 4 && directionTry === 1) || (GHOST_BLINKY_DIRECTION === 1 && directionTry === 4) ) { 
 						quarterChangeDirection = true;
 					}
@@ -331,70 +446,48 @@ function moveGhost(direction) {
 					}
 				}
 			}
-
-			if (canMoveGhost(ghost, GHOST_BLINKY_DIRECTION)) { 
-				eraseGhost(ghost);
+			if (canMoveGhost(GHOST_BLINKY_DIRECTION)) { 
+				eraseGhost();
 							
+				if (eval('GHOST_BLINKY_BODY_STATE < GHOST_BODY_STATE_MAX')) { 
+					eval('GHOST_BLINKY_BODY_STATE ++;');
+				} else { 
+					eval('GHOST_BLINKY_BODY_STATE = 0;');
+				}
+				
 				var speedUp = 0;
 				if (quarterChangeDirection) { 
 					speedUp = 6;
 				}
 
-				// if (eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE < GHOST_BODY_STATE_MAX')) { 
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE ++;');
-				// } else { 
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE = 0;');
-				// }
-							
-				// if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 1') ) { 
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X += GHOST_POSITION_STEP + ' + speedUp);
-				// } else if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 2') ) { 
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y += GHOST_POSITION_STEP + ' + speedUp);
-				// } else if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 3') ) { 
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X -= GHOST_POSITION_STEP + ' + speedUp);
-				// } else if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 4') ) { 
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y -= GHOST_POSITION_STEP + ' + speedUp);
-				// }
-				
-				// if ( eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X === 2') && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y === 258') ) { 
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X = 548;');
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y = 258;');
-				// } else if ( eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X === 548') && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y === 258') ) { 
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X = 2;');
-				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y = 258;');
-				// }
-				
-				if ( GHOST_BLINKY_DIRECTION === 1 ) { 
+				if (GHOST_BLINKY_DIRECTION === 1) { 
 					GHOST_BLINKY_POSITION_X += GHOST_POSITION_STEP + speedUp;
-				} else if ( GHOST_BLINKY_DIRECTION === 2 ) { 
+				} else if (GHOST_BLINKY_DIRECTION === 2) { 
 					GHOST_BLINKY_POSITION_Y += GHOST_POSITION_STEP + speedUp;
-				} else if ( GHOST_BLINKY_DIRECTION === 3 ) { 
+				} else if (GHOST_BLINKY_DIRECTION === 3) { 
 					GHOST_BLINKY_POSITION_X -= GHOST_POSITION_STEP + speedUp;
-				} else if ( GHOST_BLINKY_DIRECTION === 4 ) { 
-					GHOST_BLINKY_POSITION_Y -= (GHOST_POSITION_STEP + speedUp);
+				} else if (GHOST_BLINKY_DIRECTION === 4) { 
+					GHOST_BLINKY_POSITION_Y -= GHOST_POSITION_STEP + speedUp;
 				}
 				
-				if ( GHOST_BLINKY_POSITION_X === 2 && GHOST_BLINKY_POSITION_Y === 258 ) { 
+				if (GHOST_BLINKY_POSITION_X === 2 && GHOST_BLINKY_POSITION_Y === 258) { 
 					GHOST_BLINKY_POSITION_X = 548;
 					GHOST_BLINKY_POSITION_Y = 258;
-				} else if ( GHOST_BLINKY_POSITION_X === 548 && GHOST_BLINKY_POSITION_Y === 258 ) { 
+				} else if (GHOST_BLINKY_POSITION_X === 548 && GHOST_BLINKY_POSITION_Y === 258) { 
 					GHOST_BLINKY_POSITION_X = 2;
 					GHOST_BLINKY_POSITION_Y = 258;
 				}
-
-				drawGhost(ghost);
 				
-				if (eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE === 3') && eval('GHOST_' + ghost.toUpperCase() + '_STATE != -1')) { 
+				drawGhost();
+				
+				if (GHOST_BLINKY_BODY_STATE === 3 && GHOST_BLINKY_STATE != -1) { 
 					if ( !PACMAN_MOVING ) { 
-						testGhostPacman(ghost);
+						testGhostPacman();
 					}
-					testGhostTunnel(ghost);
+					testGhostTunnel();
 				}
-			} else {
-				// stopGhost(ghost) 
-				// eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION = oneDirection();');
-				
-				drawGhost(ghost);
+			} else { 
+				GHOST_BLINKY_DIRECTION = oneDirection();
 			}
 		}else if (direction && GHOST_BLINKY_DIRECTION === direction) { 
 			tryMoveGhostCancel();
@@ -403,32 +496,32 @@ function moveGhost(direction) {
 }
 
 function testGhostTunnel(ghost) { 
-	if ( eval('GHOST_' + ghost.toUpperCase() + '_STATE === 0') ) { 
-		if (isInTunnel(ghost) && eval('GHOST_' + ghost.toUpperCase() + '_TUNNEL === false')) { 
+	if ( eval('GHOST_BLINKY_STATE === 0') ) { 
+		if (isInTunnel(ghost) && eval('GHOST_BLINKY_TUNNEL === false')) { 
 			stopGhost(ghost);
-			eval('GHOST_' + ghost.toUpperCase() + '_TUNNEL = true');
+			eval('GHOST_BLINKY_TUNNEL = true');
 			moveGhost(ghost);
-		} else if (!isInTunnel(ghost) && eval('GHOST_' + ghost.toUpperCase() + '_TUNNEL === true')) { 
+		} else if (!isInTunnel(ghost) && eval('GHOST_BLINKY_TUNNEL === true')) { 
 			stopGhost(ghost);
-			eval('GHOST_' + ghost.toUpperCase() + '_TUNNEL = false');
+			eval('GHOST_BLINKY_TUNNEL = false');
 			moveGhost(ghost);
 		}
 	}
 }
 function isInTunnel(ghost) { 
-	if ( ( eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X >= 2') && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X <= 106') ) && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y === 258') ) { 
+	if ( ( eval('GHOST_BLINKY_POSITION_X >= 2') && eval('GHOST_BLINKY_POSITION_X <= 106') ) && eval('GHOST_BLINKY_POSITION_Y === 258') ) { 
 		return true;
-	} else if ( ( eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X >= 462') && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X <= 548') ) && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y === 258') ) { 
+	} else if ( ( eval('GHOST_BLINKY_POSITION_X >= 462') && eval('GHOST_BLINKY_POSITION_X <= 548') ) && eval('GHOST_BLINKY_POSITION_Y === 258') ) { 
 		return true;
 	}
 }
 
 
 function changeDirection(ghost) { 
-	eval('var direction = GHOST_' + ghost.toUpperCase() + '_DIRECTION');
-	eval('var state = GHOST_' + ghost.toUpperCase() + '_STATE');
-	eval('var ghostX = GHOST_' + ghost.toUpperCase() + '_POSITION_X');
-	eval('var ghostY = GHOST_' + ghost.toUpperCase() + '_POSITION_Y');
+	eval('var direction = GHOST_BLINKY_DIRECTION');
+	eval('var state = GHOST_BLINKY_STATE');
+	eval('var ghostX = GHOST_BLINKY_POSITION_X');
+	eval('var ghostY = GHOST_BLINKY_POSITION_Y');
 	
 	var tryDirection = oneDirection();
 	
@@ -448,32 +541,32 @@ function changeDirection(ghost) {
 						tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
 					}
 				}
-				
-			} else if (ghost === "pinky") { 
-			
-				var nothing = whatsYourProblem();
-				if (nothing < 3) { 
-				
-					tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-					if ( !(canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) ) { 
-						axe ++;
-						if (axe > 2) axe = 1; 
-						tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-					}
-					tryDirection = reverseDirection(tryDirection);
-				}
-				
-			} else if (ghost === "inky") { 
-				var good = anyGoodIdea();
-				if (good < 3) { 
-					tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-					if ( !(canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) ) { 
-						axe ++;
-						if (axe > 2) axe = 1; 
-						tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-					}
-				}
 			}
+			//  else if (ghost === "pinky") { 
+			
+			// 	var nothing = whatsYourProblem();
+			// 	if (nothing < 3) { 
+				
+			// 		tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
+			// 		if ( !(canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) ) { 
+			// 			axe ++;
+			// 			if (axe > 2) axe = 1; 
+			// 			tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
+			// 		}
+			// 		tryDirection = reverseDirection(tryDirection);
+			// 	}
+				
+			// } else if (ghost === "inky") { 
+			// 	var good = anyGoodIdea();
+			// 	if (good < 3) { 
+			// 		tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
+			// 		if ( !(canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) ) { 
+			// 			axe ++;
+			// 			if (axe > 2) axe = 1; 
+			// 			tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
+			// 		}
+			// 	}
+			// }
 		}
 		if (state === 1) { 
 			tryDirection = reverseDirection(tryDirection);
@@ -491,7 +584,7 @@ function changeDirection(ghost) {
 	}
 	
 	if (canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) { 
-		eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION = tryDirection');
+		eval('GHOST_BLINKY_DIRECTION = tryDirection');
 	}
 }
 
@@ -539,11 +632,11 @@ function reverseDirection(direction) {
 	else return direction + 2;
 }
 
-function eraseGhost(ghost) { 
+function eraseGhost() { 
 
-	var ctx = getGhostCanevasContext(ghost);
+	var ctx = getGhostCanevasContext('blinky');
 	
-	eval('ctx.clearRect(GHOST_' + ghost.toUpperCase() + '_POSITION_X - 17, GHOST_' + ghost.toUpperCase() + '_POSITION_Y - 17, 34, 34)');
+	eval('ctx.clearRect(GHOST_BLINKY_POSITION_X - 17, GHOST_BLINKY_POSITION_Y - 17, 34, 34)');
 }
 function eraseGhosts() { 
 
@@ -553,7 +646,7 @@ function eraseGhosts() {
 	// eraseGhost('clyde');
 }
 
-function canMoveGhost(ghost, direction) { 
+function canMoveGhost(direction) { 
 	if (!direction) { 
 		var direction = GHOST_BLINKY_DIRECTION
 		// eval('var direction = GHOST_BLINKY_DIRECTION');
@@ -561,12 +654,9 @@ function canMoveGhost(ghost, direction) {
 	var positionX = GHOST_BLINKY_POSITION_X;
 	var positionY = GHOST_BLINKY_POSITION_Y;
 	var state = GHOST_BLINKY_STATE;
-	// if (!direction) { 
-	// 	eval('var direction = GHOST_' + ghost.toUpperCase() + '_DIRECTION');
-	// }
-	// eval('var positionX = GHOST_' + ghost.toUpperCase() + '_POSITION_X');
-	// eval('var positionY = GHOST_' + ghost.toUpperCase() + '_POSITION_Y');
-	// eval('var state = GHOST_' + ghost.toUpperCase() + '_STATE');
+	// eval('var positionX = GHOST_BLINKY_POSITION_X');
+	// eval('var positionY = GHOST_BLINKY_POSITION_Y');
+	// eval('var state = GHOST_BLINKY_STATE');
 	
 	if (positionX === 276 && positionY === 204 && direction === 2 && state === 0) return false;
 
@@ -613,20 +703,20 @@ function oneDirectionY() {
 
 function stopGhost(ghost) { 
 
-	if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === 1')) { 
-		eval('if(GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER !== null) GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER.cancel()');
-		eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER = null');
-		eval('GHOST_' + ghost.toUpperCase() + '_STATE = 0');
-	} else if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === -1')) { 
-		eval('if(GHOST_' + ghost.toUpperCase() + '_EAT_TIMER !== null) GHOST_' + ghost.toUpperCase() + '_EAT_TIMER.cancel()');
-		eval('GHOST_' + ghost.toUpperCase() + '_EAT_TIMER = null');
-		eval('GHOST_' + ghost.toUpperCase() + '_STATE = 0');
+	if (eval('GHOST_BLINKY_STATE === 1')) { 
+		eval('if(GHOST_BLINKY_AFFRAID_TIMER !== null) GHOST_BLINKY_AFFRAID_TIMER.cancel()');
+		eval('GHOST_BLINKY_AFFRAID_TIMER = null');
+		eval('GHOST_BLINKY_STATE = 0');
+	} else if (eval('GHOST_BLINKY_STATE === -1')) { 
+		eval('if(GHOST_BLINKY_EAT_TIMER !== null) GHOST_BLINKY_EAT_TIMER.cancel()');
+		eval('GHOST_BLINKY_EAT_TIMER = null');
+		eval('GHOST_BLINKY_STATE = 0');
 	}
 
-	if ( eval('GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER != -1') ) { 
-		eval('clearInterval(GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER)');
-		eval('GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER = -1');
-		eval('GHOST_' + ghost.toUpperCase() + '_MOVING = false');
+	if ( eval('GHOST_BLINKY_MOVING_TIMER != -1') ) { 
+		eval('clearInterval(GHOST_BLINKY_MOVING_TIMER)');
+		eval('GHOST_BLINKY_MOVING_TIMER = -1');
+		eval('GHOST_BLINKY_MOVING = false');
 	}
 }
 function stopGhosts() { 
@@ -637,16 +727,16 @@ function stopGhosts() {
 }
 
 function pauseGhost(ghost) { 
-	if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === 1')) { 
-		eval('if(GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER !== null) GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER.pause()');
-	} else if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === -1')) { 
-		eval('if(GHOST_' + ghost.toUpperCase() + '_EAT_TIMER !== null) GHOST_' + ghost.toUpperCase() + '_EAT_TIMER.pause()');
+	if (eval('GHOST_BLINKY_STATE === 1')) { 
+		eval('if(GHOST_BLINKY_AFFRAID_TIMER !== null) GHOST_BLINKY_AFFRAID_TIMER.pause()');
+	} else if (eval('GHOST_BLINKY_STATE === -1')) { 
+		eval('if(GHOST_BLINKY_EAT_TIMER !== null) GHOST_BLINKY_EAT_TIMER.pause()');
 	}
 	
-	if ( eval('GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER != -1') ) { 
-		eval('clearInterval(GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER)');
-		eval('GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER = -1');
-		eval('GHOST_' + ghost.toUpperCase() + '_MOVING = false');
+	if ( eval('GHOST_BLINKY_MOVING_TIMER != -1') ) { 
+		eval('clearInterval(GHOST_BLINKY_MOVING_TIMER)');
+		eval('GHOST_BLINKY_MOVING_TIMER = -1');
+		eval('GHOST_BLINKY_MOVING = false');
 	}
 }
 function pauseGhosts() { 
@@ -657,10 +747,10 @@ function pauseGhosts() {
 }
 
 function resumeGhost(ghost) { 
-	if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === 1')) { 
-		eval('if(GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER !== null) GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER.resume()');
-	} else if (eval('GHOST_' + ghost.toUpperCase() + '_STATE === -1')) { 
-		eval('if(GHOST_' + ghost.toUpperCase() + '_EAT_TIMER !== null) GHOST_' + ghost.toUpperCase() + '_EAT_TIMER.resume()');
+	if (eval('GHOST_BLINKY_STATE === 1')) { 
+		eval('if(GHOST_BLINKY_AFFRAID_TIMER !== null) GHOST_BLINKY_AFFRAID_TIMER.resume()');
+	} else if (eval('GHOST_BLINKY_STATE === -1')) { 
+		eval('if(GHOST_BLINKY_EAT_TIMER !== null) GHOST_BLINKY_EAT_TIMER.resume()');
 	}
 	moveGhost(ghost);
 }
