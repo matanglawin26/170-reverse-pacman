@@ -260,7 +260,7 @@ function cancelEatGhost(ghost) {
 }
 
 function moveGhosts() { 
-	moveGhost();
+	moveGhost(1);
 	console.log("PATHS: ", PATHS)
 	// moveGhost('pinky');
 	// moveGhost('inky');
@@ -280,8 +280,7 @@ function tryMoveGhostCancel() {
 	}
 }
 
-function moveGhost(direction) {
-	let ghost = 'BLINKY';
+function moveGhost(direction, ghost = 'BLINKY') {
 	if (GHOST_BLINKY_MOVING === false) { 
 		GHOST_BLINKY_MOVING = true;
 
@@ -425,72 +424,26 @@ function changeDirection(ghost) {
 	
 	eval('var tryDirection = GHOST_' + ghost.toUpperCase() + '_DIRECTION');
 	
-	if (state === 0 || state === 1) { 
-		// if (ghostX != 276 && ghostY != 258) { 
-		// 	var pacmanX = PACMAN_POSITION_X;
-		// 	var pacmanY = PACMAN_POSITION_Y;
-		// 	var axe = oneAxe();
-		// 	if (ghost === "blinky") { 
-		// 		var nothing = whatsYourProblem();
-		// 		if (nothing < 6) { 
-		// 			tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-		// 			if ( !(canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) ) { 
-		// 				axe ++;
-		// 				if (axe > 2) axe = 1; 
-		// 				tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-		// 			}
-		// 		}
-				
-		// 	} else if (ghost === "pinky") { 
-			
-		// 		var nothing = whatsYourProblem();
-		// 		if (nothing < 3) { 
-				
-		// 			tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-		// 			if ( !(canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) ) { 
-		// 				axe ++;
-		// 				if (axe > 2) axe = 1; 
-		// 				tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-		// 			}
-		// 			tryDirection = reverseDirection(tryDirection);
-		// 		}
-				
-		// 	} else if (ghost === "inky") { 
-		// 		var good = anyGoodIdea();
-		// 		if (good < 3) { 
-		// 			tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-		// 			if ( !(canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) ) { 
-		// 				axe ++;
-		// 				if (axe > 2) axe = 1; 
-		// 				tryDirection = getRightDirection(axe, ghostX, ghostY, pacmanX, pacmanY);
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// if (state === 1) { 
-		// 	tryDirection = reverseDirection(tryDirection);
-		// }
-	} else { 
-		console.log("GHOST DIRECTION!", direction)
-		console.log("GHOST EATEN!")
+	if (!(state === 0 || state === 1)) { 
+		console.log("STATE: ", GHOST_BLINKY_STATE)
 		var axe = oneAxe();
 		tryDirection = getRightDirectionForHome(axe, ghostX, ghostY);
-		if (!(canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2))) { 
-			axe ++;
-			if (axe > 2) axe = 1; 
-			tryDirection = getRightDirectionForHome(axe, ghostX, ghostY);
-			// eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION = tryDirection');
-		} else { 
+		if (canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) { 
 			// axe ++;
 			// if (axe > 2) axe = 1; 
 			// tryDirection = getRightDirectionForHome(axe, ghostX, ghostY);
+			eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION = tryDirection');
+			// eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION = tryDirection');
+		} else { 
+			axe ++;
+			if (axe > 2) axe = 1; 
+			tryDirection = getRightDirectionForHome(axe, ghostX, ghostY);
 		}
-	}
-	
-	if (canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) { 
-		console.log("SUD PAGYUD DIRI")
-		eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION = tryDirection');
-	}
+	} 	
+	// if (canMoveGhost(ghost, tryDirection) && (direction != tryDirection -2 && direction != tryDirection + 2)) { 
+	// 	console.log("SUD PAGYUD DIRI")
+		
+	// }
 }
 
 function getRightDirectionForHome(axe, ghostX, ghostY) { 

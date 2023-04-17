@@ -136,18 +136,18 @@
 								
 								blinkSuperBubbles();
 								
-							} else if (e.keyCode >= 37 && e.keyCode <= 40 && !PAUSE && !PACMAN_DEAD && !LOCK) { 
+							} else if (e.keyCode >= 37 && e.keyCode <= 40 && !PAUSE && !PACMAN_DEAD && !LOCK && GHOST_BLINKY_STATE !== -1) { 
 								if ( e.keyCode === 39 ) { 
-									movePacman(1);
+									//movePacman(1);
 									moveGhost(1);
 								} else if ( e.keyCode === 40 ) { 
-									movePacman(2);
+									//movePacman(2);
 									moveGhost(2);
 								} else if ( e.keyCode === 37 ) { 
-									movePacman(3);
+									//movePacman(3);
 									moveGhost(3);
 								} else if ( e.keyCode === 38 ) { 
-									movePacman(4);
+									//movePacman(4);
 									moveGhost(4);
 								}
 							} else if (e.keyCode === 68 && !PAUSE) { 

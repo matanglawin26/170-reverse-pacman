@@ -89,62 +89,189 @@ function tryMovePacman(direction) {
 	PACMAN_DIRECTION_TRY_TIMER = new Timer('tryMovePacmanCancel()', PACMAN_DIRECTION_TRY_CANCEL);
 }
 
-function movePacman(direction) {
+// function movePacman(direction) {
 
+// 	if (PACMAN_MOVING === false) { 
+// 		PACMAN_MOVING = true;
+// 		drawPacman();
+// 		PACMAN_MOVING_TIMER = setInterval('movePacman()', PACMAN_MOVING_SPEED);
+// 	}
+	
+// 	var directionTry = direction;
+// 	var quarterChangeDirection = false;
+	
+// 	if (!directionTry && PACMAN_DIRECTION_TRY != -1) { 
+// 		directionTry = PACMAN_DIRECTION_TRY;
+// 	}
+	
+// 	if ((!directionTry || PACMAN_DIRECTION !== directionTry)) { 
+	
+// 		if (directionTry) { 
+// 			if (canMovePacman(directionTry)) { 
+// 				if (PACMAN_DIRECTION + 1 === directionTry || PACMAN_DIRECTION - 1 === directionTry || PACMAN_DIRECTION + 1 === directionTry || (PACMAN_DIRECTION === 4 && directionTry === 1) || (PACMAN_DIRECTION === 1 && directionTry === 4) ) { 
+// 					quarterChangeDirection = true;
+// 				}
+// 				PACMAN_DIRECTION = directionTry;
+// 				tryMovePacmanCancel();
+// 			} else { 
+// 				if (directionTry !== PACMAN_DIRECTION_TRY) { 
+// 					tryMovePacmanCancel();
+// 				}
+// 				if (PACMAN_DIRECTION_TRY === -1) { 
+// 					tryMovePacman(directionTry);
+// 				}
+// 			}
+// 		}
+
+// 		if (canMovePacman(PACMAN_DIRECTION)) { 
+// 			erasePacman();
+			
+// 			if (PACMAN_MOUNTH_STATE < PACMAN_MOUNTH_STATE_MAX) { 
+// 				PACMAN_MOUNTH_STATE ++; 
+// 			} else { 
+// 				PACMAN_MOUNTH_STATE = 0; 
+// 			}
+						
+// 			var speedUp = 0;
+// 			if (quarterChangeDirection) { 
+// 				speedUp = 6;
+// 			}
+			
+// 			// if ( PACMAN_DIRECTION === 1 ) { 
+// 			// 	PACMAN_POSITION_X += PACMAN_POSITION_STEP + speedUp;
+// 			// } else if ( PACMAN_DIRECTION === 2 ) { 
+// 			// 	PACMAN_POSITION_Y += PACMAN_POSITION_STEP + speedUp;
+// 			// } else if ( PACMAN_DIRECTION === 3 ) { 
+// 			// 	PACMAN_POSITION_X -= PACMAN_POSITION_STEP + speedUp;
+// 			// } else if ( PACMAN_DIRECTION === 4 ) { 
+// 			// 	PACMAN_POSITION_Y -= (PACMAN_POSITION_STEP + speedUp);
+// 			// }
+			
+// 			var safePath = findSafePath(PACMAN_POSITION_X, PACMAN_POSITION_Y, PACMAN_DIRECTION);
+// 			console.log("SAFE PATHS: " + safePath)
+// 			if (safePath && safePath.length > 0) {
+// 				// Move Pacman to the next safe position
+// 				if ( safePath[0].direction === 1 ) { 
+// 					PACMAN_POSITION_X += PACMAN_POSITION_STEP + speedUp;
+// 				} else if ( safePath[0].direction === 2 ) { 
+// 					PACMAN_POSITION_Y += PACMAN_POSITION_STEP + speedUp;
+// 				} else if ( safePath[0].direction === 3 ) { 
+// 					PACMAN_POSITION_X -= PACMAN_POSITION_STEP + speedUp;
+// 				} else if ( safePath[0].direction === 4 ) { 
+// 					PACMAN_POSITION_Y -= (PACMAN_POSITION_STEP + speedUp);
+// 				}
+// 			} else {
+// 				// If no safe path is found, move Pacman in the current direction
+// 				if ( PACMAN_DIRECTION === 1 ) { 
+// 					PACMAN_POSITION_X += PACMAN_POSITION_STEP + speedUp;
+// 				} else if ( PACMAN_DIRECTION === 2 ) { 
+// 					PACMAN_POSITION_Y += PACMAN_POSITION_STEP + speedUp;
+// 				} else if ( PACMAN_DIRECTION === 3 ) { 
+// 					PACMAN_POSITION_X -= PACMAN_POSITION_STEP + speedUp;
+// 				} else if ( PACMAN_DIRECTION === 4 ) { 
+// 					PACMAN_POSITION_Y -= (PACMAN_POSITION_STEP + speedUp);
+// 				}
+// 			}
+			
+// 			if ( PACMAN_POSITION_X === 2 && PACMAN_POSITION_Y === 258 ) { 
+// 				PACMAN_POSITION_X = 548;
+// 				PACMAN_POSITION_Y = 258;
+// 			} else if ( PACMAN_POSITION_X === 548 && PACMAN_POSITION_Y === 258 ) { 
+// 				PACMAN_POSITION_X = 2;
+// 				PACMAN_POSITION_Y = 258;
+// 			}
+
+// 			drawPacman();
+			
+// 			if ((PACMAN_MOUNTH_STATE) === 0 || (PACMAN_MOUNTH_STATE) === 3) { 
+// 				testBubblesPacman();
+// 				testGhostsPacman();
+// 				testFruitsPacman();
+// 			}
+// 		} 
+// 		// else { 
+// 		// 	stopPacman();
+// 		// }
+// 	} else if (direction && PACMAN_DIRECTION === direction) { 
+// 		tryMovePacmanCancel();
+// 	}
+// }
+
+function findSafePath(pacmanX, pacmanY, pacmanDirection) {
+	console.log("BLINKY X POSITION: ", GHOST_BLINKY_POSITION_X)
+	var safePaths = [];
+  
+	// check each possible direction Pacman can move in
+	for (var i = 1; i <= 4; i++) {
+	  if (i !== pacmanDirection) {
+		// if the ghost is not moving towards Pacman, or if Pacman is not moving towards the ghost, or if the ghost is more than one step away, it's safe to move in this direction
+		if (
+		  (i !== getOppositeDirection(GHOST_BLINKY_DIRECTION)) ||
+		  (getOppositeDirection(i) !== pacmanDirection) ||
+		  (getDistance(pacmanX, pacmanY, GHOST_BLINKY_POSITION_X, GHOST_BLINKY_POSITION_Y) > PACMAN_POSITION_STEP)
+		) {
+		  // check if Pacman can move in this direction
+		  if (canMovePacman(i)) {
+			// add this direction to the list of safe paths
+			safePaths.push({direction: i, distance: getDistance(pacmanX, pacmanY, GHOST_BLINKY_POSITION_X, GHOST_BLINKY_POSITION_Y)});
+		  }
+		}
+	  }
+	}
+  
+	// sort the safe paths by distance from the ghost
+	safePaths.sort(function(a, b) {
+	  return a.distance - b.distance;
+	});
+  
+	// return the list of safe paths, with the closest one first
+	return safePaths;
+  }
+   
+// returns the opposite direction of the given direction (e.g. 1 -> 3, 2 -> 4, etc.)
+function getOppositeDirection(direction) {
+if (direction === 1) {
+	return 3;
+} else if (direction === 2) {
+	return 4;
+} else if (direction === 3) {
+	return 1;
+} else {
+	return 2;
+}
+}
+
+// returns the distance between two points
+function getDistance(x1, y1, x2, y2) {
+return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
+
+function movePacman() {
 	if (PACMAN_MOVING === false) { 
 		PACMAN_MOVING = true;
 		drawPacman();
 		PACMAN_MOVING_TIMER = setInterval('movePacman()', PACMAN_MOVING_SPEED);
-	}
+	} else { 
 	
-	var directionTry = direction;
-	var quarterChangeDirection = false;
-	
-	if (!directionTry && PACMAN_DIRECTION_TRY != -1) { 
-		directionTry = PACMAN_DIRECTION_TRY;
-	}
-	
-	if ((!directionTry || PACMAN_DIRECTION !== directionTry)) { 
-	
-		if (directionTry) { 
-			if (canMovePacman(directionTry)) { 
-				if (PACMAN_DIRECTION + 1 === directionTry || PACMAN_DIRECTION - 1 === directionTry || PACMAN_DIRECTION + 1 === directionTry || (PACMAN_DIRECTION === 4 && directionTry === 1) || (PACMAN_DIRECTION === 1 && directionTry === 4) ) { 
-					quarterChangeDirection = true;
-				}
-				PACMAN_DIRECTION = directionTry;
-				tryMovePacmanCancel();
-			} else { 
-				if (directionTry !== PACMAN_DIRECTION_TRY) { 
-					tryMovePacmanCancel();
-				}
-				if (PACMAN_DIRECTION_TRY === -1) { 
-					tryMovePacman(directionTry);
-				}
-			}
-		}
-
+		changePacmanDirection();
+		
 		if (canMovePacman(PACMAN_DIRECTION)) { 
 			erasePacman();
-			
+
 			if (PACMAN_MOUNTH_STATE < PACMAN_MOUNTH_STATE_MAX) { 
 				PACMAN_MOUNTH_STATE ++; 
 			} else { 
 				PACMAN_MOUNTH_STATE = 0; 
 			}
-						
-			var speedUp = 0;
-			if (quarterChangeDirection) { 
-				speedUp = 6;
-			}
-			
+
 			if ( PACMAN_DIRECTION === 1 ) { 
-				PACMAN_POSITION_X += PACMAN_POSITION_STEP + speedUp;
+				PACMAN_POSITION_X += PACMAN_POSITION_STEP;
 			} else if ( PACMAN_DIRECTION === 2 ) { 
-				PACMAN_POSITION_Y += PACMAN_POSITION_STEP + speedUp;
+				PACMAN_POSITION_Y += PACMAN_POSITION_STEP;
 			} else if ( PACMAN_DIRECTION === 3 ) { 
-				PACMAN_POSITION_X -= PACMAN_POSITION_STEP + speedUp;
+				PACMAN_POSITION_X -= PACMAN_POSITION_STEP;
 			} else if ( PACMAN_DIRECTION === 4 ) { 
-				PACMAN_POSITION_Y -= (PACMAN_POSITION_STEP + speedUp);
+				PACMAN_POSITION_Y -= (PACMAN_POSITION_STEP);
 			}
 			
 			if ( PACMAN_POSITION_X === 2 && PACMAN_POSITION_Y === 258 ) { 
@@ -163,10 +290,101 @@ function movePacman(direction) {
 				testFruitsPacman();
 			}
 		} else { 
-			stopPacman();
+			PACMAN_DIRECTION = oneDirection();
 		}
-	} else if (direction && PACMAN_DIRECTION === direction) { 
-		tryMovePacmanCancel();
+	}
+}
+
+function changePacmanDirection() { 
+	var direction = PACMAN_DIRECTION
+	var pacmanX = PACMAN_POSITION_X
+	var pacmanY = PACMAN_POSITION_Y
+	
+	var tryDirection = onePacmanDirection(pacmanX, pacmanY, ghostX, ghostY, direction);
+
+	if (pacmanX != 276 && pacmanX != 258) { 
+		var ghostX = GHOST_BLINKY_POSITION_X;
+		var ghostY = GHOST_BLINKY_POSITION_Y;
+
+		// Calculate the distances between Pacman and the ghost in all possible directions
+		var distances = {
+			1: Math.sqrt(Math.pow(pacmanX + PACMAN_POSITION_STEP - ghostX, 2) + Math.pow(pacmanY - ghostY, 2)),
+			2: Math.sqrt(Math.pow(pacmanX - ghostX, 2) + Math.pow(pacmanY + PACMAN_POSITION_STEP - ghostY, 2)),
+			3: Math.sqrt(Math.pow(pacmanX - PACMAN_POSITION_STEP - ghostX, 2) + Math.pow(pacmanY - ghostY, 2)),
+			4: Math.sqrt(Math.pow(pacmanX - ghostX, 2) + Math.pow(pacmanY - PACMAN_POSITION_STEP - ghostY, 2)),
+		};
+
+		// Choose the direction that leads to the farthest distance
+		var maxDistance = Math.max.apply(null, Object.values(distances));
+		tryDirection = parseInt(Object.keys(distances).find(key => distances[key] === maxDistance));
+	}
+
+	if (canMovePacman(tryDirection)) { 
+		PACMAN_DIRECTION = tryDirection;
+	}
+}
+
+function onePacmanDirection(pacmanX, pacmanY, ghostX, ghostY, currentDirection) { 
+	var distances = [];
+	var directions = [];
+
+	// Calculate the distance between Pacman and the ghost for each direction
+	if (canMovePacman(1) && currentDirection != 3) { // right
+		distances.push(distance(pacmanX + PACMAN_POSITION_STEP, pacmanY, ghostX, ghostY));
+		directions.push(1);
+	}
+	if (canMovePacman(2) && currentDirection != 4) { // down
+		distances.push(distance(pacmanX, pacmanY + PACMAN_POSITION_STEP, ghostX, ghostY));
+		directions.push(2);
+	}
+	if (canMovePacman(3) && currentDirection != 1) { // left
+		distances.push(distance(pacmanX - PACMAN_POSITION_STEP, pacmanY, ghostX, ghostY));
+		directions.push(3);
+	}
+	if (canMovePacman(4) && currentDirection != 2) { // up
+		distances.push(distance(pacmanX, pacmanY - PACMAN_POSITION_STEP, ghostX, ghostY));
+		directions.push(4);
+	}
+
+	// Sort the directions by distance
+	var sortedDirections = [];
+	while (distances.length > 0) {
+		var minIndex = 0;
+		for (var i = 1; i < distances.length; i++) {
+			if (distances[i] < distances[minIndex]) {
+				minIndex = i;
+			}
+		}
+		sortedDirections.push(directions[minIndex]);
+		distances.splice(minIndex, 1);
+		directions.splice(minIndex, 1);
+	}
+
+	// Choose a random direction among the farthest ones
+	var numFarthestDirections = Math.min(sortedDirections.length, 2);
+	var randomIndex = Math.floor(Math.random() * numFarthestDirections);
+	return sortedDirections[randomIndex];
+}
+
+// Helper function to calculate distance between two points
+function distance(x1, y1, x2, y2) {
+	return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
+
+
+function getRightDirection(axe, pacmanX, pacmanY , ghostX, ghostY) { 
+	if (axe === 1) { 
+		if (ghostX > pacmanX) { 
+		 return 3;
+		} else { 
+			return 1;
+		}
+	} else { 
+		if (ghostY > pacmanY) { 
+		 return 4;
+		} else { 
+			return 2;
+		}
 	}
 }
 
