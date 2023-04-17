@@ -88,114 +88,6 @@ function tryMovePacman(direction) {
 	PACMAN_DIRECTION_TRY = direction;
 	PACMAN_DIRECTION_TRY_TIMER = new Timer('tryMovePacmanCancel()', PACMAN_DIRECTION_TRY_CANCEL);
 }
-
-// function movePacman(direction) {
-
-// 	if (PACMAN_MOVING === false) { 
-// 		PACMAN_MOVING = true;
-// 		drawPacman();
-// 		PACMAN_MOVING_TIMER = setInterval('movePacman()', PACMAN_MOVING_SPEED);
-// 	}
-	
-// 	var directionTry = direction;
-// 	var quarterChangeDirection = false;
-	
-// 	if (!directionTry && PACMAN_DIRECTION_TRY != -1) { 
-// 		directionTry = PACMAN_DIRECTION_TRY;
-// 	}
-	
-// 	if ((!directionTry || PACMAN_DIRECTION !== directionTry)) { 
-	
-// 		if (directionTry) { 
-// 			if (canMovePacman(directionTry)) { 
-// 				if (PACMAN_DIRECTION + 1 === directionTry || PACMAN_DIRECTION - 1 === directionTry || PACMAN_DIRECTION + 1 === directionTry || (PACMAN_DIRECTION === 4 && directionTry === 1) || (PACMAN_DIRECTION === 1 && directionTry === 4) ) { 
-// 					quarterChangeDirection = true;
-// 				}
-// 				PACMAN_DIRECTION = directionTry;
-// 				tryMovePacmanCancel();
-// 			} else { 
-// 				if (directionTry !== PACMAN_DIRECTION_TRY) { 
-// 					tryMovePacmanCancel();
-// 				}
-// 				if (PACMAN_DIRECTION_TRY === -1) { 
-// 					tryMovePacman(directionTry);
-// 				}
-// 			}
-// 		}
-
-// 		if (canMovePacman(PACMAN_DIRECTION)) { 
-// 			erasePacman();
-			
-// 			if (PACMAN_MOUNTH_STATE < PACMAN_MOUNTH_STATE_MAX) { 
-// 				PACMAN_MOUNTH_STATE ++; 
-// 			} else { 
-// 				PACMAN_MOUNTH_STATE = 0; 
-// 			}
-						
-// 			var speedUp = 0;
-// 			if (quarterChangeDirection) { 
-// 				speedUp = 6;
-// 			}
-			
-// 			// if ( PACMAN_DIRECTION === 1 ) { 
-// 			// 	PACMAN_POSITION_X += PACMAN_POSITION_STEP + speedUp;
-// 			// } else if ( PACMAN_DIRECTION === 2 ) { 
-// 			// 	PACMAN_POSITION_Y += PACMAN_POSITION_STEP + speedUp;
-// 			// } else if ( PACMAN_DIRECTION === 3 ) { 
-// 			// 	PACMAN_POSITION_X -= PACMAN_POSITION_STEP + speedUp;
-// 			// } else if ( PACMAN_DIRECTION === 4 ) { 
-// 			// 	PACMAN_POSITION_Y -= (PACMAN_POSITION_STEP + speedUp);
-// 			// }
-			
-// 			var safePath = findSafePath(PACMAN_POSITION_X, PACMAN_POSITION_Y, PACMAN_DIRECTION);
-// 			console.log("SAFE PATHS: " + safePath)
-// 			if (safePath && safePath.length > 0) {
-// 				// Move Pacman to the next safe position
-// 				if ( safePath[0].direction === 1 ) { 
-// 					PACMAN_POSITION_X += PACMAN_POSITION_STEP + speedUp;
-// 				} else if ( safePath[0].direction === 2 ) { 
-// 					PACMAN_POSITION_Y += PACMAN_POSITION_STEP + speedUp;
-// 				} else if ( safePath[0].direction === 3 ) { 
-// 					PACMAN_POSITION_X -= PACMAN_POSITION_STEP + speedUp;
-// 				} else if ( safePath[0].direction === 4 ) { 
-// 					PACMAN_POSITION_Y -= (PACMAN_POSITION_STEP + speedUp);
-// 				}
-// 			} else {
-// 				// If no safe path is found, move Pacman in the current direction
-// 				if ( PACMAN_DIRECTION === 1 ) { 
-// 					PACMAN_POSITION_X += PACMAN_POSITION_STEP + speedUp;
-// 				} else if ( PACMAN_DIRECTION === 2 ) { 
-// 					PACMAN_POSITION_Y += PACMAN_POSITION_STEP + speedUp;
-// 				} else if ( PACMAN_DIRECTION === 3 ) { 
-// 					PACMAN_POSITION_X -= PACMAN_POSITION_STEP + speedUp;
-// 				} else if ( PACMAN_DIRECTION === 4 ) { 
-// 					PACMAN_POSITION_Y -= (PACMAN_POSITION_STEP + speedUp);
-// 				}
-// 			}
-			
-// 			if ( PACMAN_POSITION_X === 2 && PACMAN_POSITION_Y === 258 ) { 
-// 				PACMAN_POSITION_X = 548;
-// 				PACMAN_POSITION_Y = 258;
-// 			} else if ( PACMAN_POSITION_X === 548 && PACMAN_POSITION_Y === 258 ) { 
-// 				PACMAN_POSITION_X = 2;
-// 				PACMAN_POSITION_Y = 258;
-// 			}
-
-// 			drawPacman();
-			
-// 			if ((PACMAN_MOUNTH_STATE) === 0 || (PACMAN_MOUNTH_STATE) === 3) { 
-// 				testBubblesPacman();
-// 				testGhostsPacman();
-// 				testFruitsPacman();
-// 			}
-// 		} 
-// 		// else { 
-// 		// 	stopPacman();
-// 		// }
-// 	} else if (direction && PACMAN_DIRECTION === direction) { 
-// 		tryMovePacmanCancel();
-// 	}
-// }
    
 function movePacman() {
 	if (PACMAN_MOVING === false) { 
@@ -246,54 +138,6 @@ function movePacman() {
 		}
 	}
 }
-
-function changePacmanDirectionAvoidingGhost() {
-	var pacmanX = PACMAN_POSITION_X;
-	var pacmanY = PACMAN_POSITION_Y;
-	var ghostX = GHOST_BLINKY_POSITION_X;
-	var ghostY = GHOST_BLINKY_POSITION_Y;
-	var ghostDirection = GHOST_BLINKY_DIRECTION;
-	var distanceX = Math.abs(pacmanX - ghostX);
-	var distanceY = Math.abs(pacmanY - ghostY);
-	
-	if (distanceX > PACMAN_AVOID_DISTANCE && distanceY > PACMAN_AVOID_DISTANCE) {
-	  // Ghost is too far away, use oneDirection()
-	  PACMAN_DIRECTION = oneDirection();
-	} else {
-	  // Ghost is too close, try to avoid it
-	  var possibleDirections = [1, 2, 3, 4];
-	  var bestDirection = PACMAN_DIRECTION;
-	  var bestDistance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-	  
-	  for (var i = 0; i < possibleDirections.length; i++) {
-		var direction = possibleDirections[i];
-		if (canMovePacman(direction) && (direction != ghostDirection - 2 && direction != ghostDirection + 2)) {
-		  var newX = pacmanX;
-		  var newY = pacmanY;
-		//   if (direction === 1) {
-		// 	newX += PACMAN_POSITION_STEP;
-		//   } else if (direction === 2) {
-		// 	newY += PACMAN_POSITION_STEP;
-		//   } else if (direction === 3) {
-		// 	newX -= PACMAN_POSITION_STEP;
-		//   } else if (direction === 4) {
-		// 	newY -= PACMAN_POSITION_STEP;
-		//   }
-		  var newDistanceX = Math.abs(newX - ghostX);
-		  var newDistanceY = Math.abs(newY - ghostY);
-		  var newDistance = Math.sqrt(Math.pow(newDistanceX, 2) + Math.pow(newDistanceY, 2));
-		  if (newDistance > bestDistance) {
-			bestDirection = direction;
-			bestDistance = newDistance;
-		  }
-		}
-	  }
-	  
-	  PACMAN_DIRECTION = bestDirection;
-	}
-  }
-
-
 
 function changePacmanDirection() {
     var direction = PACMAN_DIRECTION;
@@ -385,23 +229,6 @@ function onePacmanDirection(pacmanX, pacmanY, ghostX, ghostY, currentDirection) 
 // Helper function to calculate distance between two points
 function distance(x1, y1, x2, y2) {
 	return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-}
-
-
-function getRightDirection(axe, pacmanX, pacmanY , ghostX, ghostY) { 
-	if (axe === 1) { 
-		if (ghostX > pacmanX) { 
-		 return 3;
-		} else { 
-			return 1;
-		}
-	} else { 
-		if (ghostY > pacmanY) { 
-		 return 4;
-		} else { 
-			return 2;
-		}
-	}
 }
 
 function canMovePacman(direction) { 
