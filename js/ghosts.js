@@ -4,7 +4,7 @@ var GHOST_BLINKY_POSITION_Y = 204;
 var GHOST_BLINKY_DIRECTION = 1;
 var GHOST_BLINKY_COLOR = "#ed1b24";
 var GHOST_BLINKY_MOVING_TIMER = -1;
-var GHOST_BLINKY_MOVING_SPEED = 16;
+var GHOST_BLINKY_MOVING_SPEED = 17;
 var GHOST_BLINKY_MOVING = false;
 var GHOST_BLINKY_BODY_STATE = 0;
 var GHOST_BLINKY_STATE = 0;
@@ -261,7 +261,6 @@ function cancelEatGhost(ghost) {
 
 function moveGhosts() { 
 	moveGhost(1);
-	console.log("PATHS: ", PATHS)
 	// moveGhost('pinky');
 	// moveGhost('inky');
 	// moveGhost("clyde");

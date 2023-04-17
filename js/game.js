@@ -86,7 +86,7 @@ function initGame(newgame) {
 	initBubbles();
 	drawBubbles();
 	
-	initFruits();
+	// initFruits();
 	
 	initPacman();
 	drawPacman();
@@ -198,29 +198,29 @@ function times() {
 	TIME_LIFE ++;
 	TIME_FRUITS ++;
 	
-	fruit();
+	// fruit();
 }
 function pauseTimes() { 
 	if (TIME_GENERAL_TIMER != -1) { 
 		clearInterval(TIME_GENERAL_TIMER);
 		TIME_GENERAL_TIMER = -1;
 	}
-	if (FRUIT_CANCEL_TIMER != null) FRUIT_CANCEL_TIMER.pause();
+	// if (FRUIT_CANCEL_TIMER != null) FRUIT_CANCEL_TIMER.pause();
 }
 function resumeTimes() { 
 	startTimes();
-	if (FRUIT_CANCEL_TIMER != null) FRUIT_CANCEL_TIMER.resume();
+	// if (FRUIT_CANCEL_TIMER != null) FRUIT_CANCEL_TIMER.resume();
 }
 function stopTimes() { 
 	if (TIME_GENERAL_TIMER != -1) { 
 		clearInterval(TIME_GENERAL_TIMER);
 		TIME_GENERAL_TIMER = -1;
 	}
-	if (FRUIT_CANCEL_TIMER != null) { 
-		FRUIT_CANCEL_TIMER.cancel();
-		FRUIT_CANCEL_TIMER = null;
-		eraseFruit();
-	}
+	// if (FRUIT_CANCEL_TIMER != null) { 
+	// 	FRUIT_CANCEL_TIMER.cancel();
+	// 	FRUIT_CANCEL_TIMER = null;
+	// 	eraseFruit();
+	// }
 }
 
 function pauseGame() { 
@@ -284,7 +284,7 @@ function lifes(l) {
 
 function gameover() { 
 	GAMEOVER = true;
-	message("game over");
+	message("you win!");
 	stopTimes();
 
 	erasePacman();
@@ -305,11 +305,11 @@ function gameover() {
 
 function message(m) { 
 	$("#message").html(m);
-	if (m === "game over") $("#message").addClass("red");
+	if (m === "you win!") $("#message").addClass("green");
 }
 function clearMessage() { 
 	$("#message").html("");
-	$("#message").removeClass("red");
+	$("#message").removeClass("green");
 }
 
 function score(s, type) { 

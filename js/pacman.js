@@ -130,7 +130,7 @@ function movePacman() {
 			if ((PACMAN_MOUNTH_STATE) === 0 || (PACMAN_MOUNTH_STATE) === 3) { 
 				testBubblesPacman();
 				testGhostsPacman();
-				testFruitsPacman();
+				// testFruitsPacman();
 			}
 		} else { 
 			PACMAN_DIRECTION = onePacmanDirection(PACMAN_POSITION_X, PACMAN_POSITION_Y, GHOST_BLINKY_POSITION_X, GHOST_BLINKY_POSITION_Y, PACMAN_DIRECTION);
@@ -211,7 +211,7 @@ function onePacmanDirection(pacmanX, pacmanY, ghostX, ghostY, currentDirection) 
 	while (distances.length > 0) {
 		var minIndex = 0;
 		for (var i = 1; i < distances.length; i++) {
-			if (distances[i] < distances[minIndex]) {
+			if (distances[i] <= distances[minIndex]) {
 				minIndex = i;
 			}
 		}

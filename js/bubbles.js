@@ -62,6 +62,7 @@ function drawBubbles() {
 			}
 		}
 	}
+	console.log("BUBBLES ARRAY: ", BUBBLES_ARRAY)
 }
 
 function stopBlinkSuperBubbles() { 
@@ -130,6 +131,7 @@ function getBubbleOnXY( x, y ) {
 		var bubbleParams = BUBBLES_ARRAY[i].split( ";" );
 		var testX = parseInt(bubbleParams[0].split( "," )[0]);
 		var testY = parseInt(bubbleParams[0].split( "," )[1]);
+		// console.log("BUBBLES_ARRAY[i]: ", BUBBLES_ARRAY[i])
 		if ( testX === x && testY === y ) { 
 			bubble = BUBBLES_ARRAY[i];
 			break;
