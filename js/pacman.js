@@ -19,7 +19,7 @@ var PACMAN_KILLING_TIMER = -1;
 var PACMAN_KILLING_SPEED = 70;
 var PACMAN_RETRY_SPEED = 2100;
 var PACMAN_DEAD = false;
-
+var PACMAN_AVOID_DISTANCE = 100;
 function initPacman() { 
 	var canvas = document.getElementById('canvas-pacman');
 	canvas.setAttribute('width', '550');
@@ -196,56 +196,7 @@ function tryMovePacman(direction) {
 // 		tryMovePacmanCancel();
 // 	}
 // }
-
-function findSafePath(pacmanX, pacmanY, pacmanDirection) {
-	console.log("BLINKY X POSITION: ", GHOST_BLINKY_POSITION_X)
-	var safePaths = [];
-  
-	// check each possible direction Pacman can move in
-	for (var i = 1; i <= 4; i++) {
-	  if (i !== pacmanDirection) {
-		// if the ghost is not moving towards Pacman, or if Pacman is not moving towards the ghost, or if the ghost is more than one step away, it's safe to move in this direction
-		if (
-		  (i !== getOppositeDirection(GHOST_BLINKY_DIRECTION)) ||
-		  (getOppositeDirection(i) !== pacmanDirection) ||
-		  (getDistance(pacmanX, pacmanY, GHOST_BLINKY_POSITION_X, GHOST_BLINKY_POSITION_Y) > PACMAN_POSITION_STEP)
-		) {
-		  // check if Pacman can move in this direction
-		  if (canMovePacman(i)) {
-			// add this direction to the list of safe paths
-			safePaths.push({direction: i, distance: getDistance(pacmanX, pacmanY, GHOST_BLINKY_POSITION_X, GHOST_BLINKY_POSITION_Y)});
-		  }
-		}
-	  }
-	}
-  
-	// sort the safe paths by distance from the ghost
-	safePaths.sort(function(a, b) {
-	  return a.distance - b.distance;
-	});
-  
-	// return the list of safe paths, with the closest one first
-	return safePaths;
-  }
    
-// returns the opposite direction of the given direction (e.g. 1 -> 3, 2 -> 4, etc.)
-function getOppositeDirection(direction) {
-if (direction === 1) {
-	return 3;
-} else if (direction === 2) {
-	return 4;
-} else if (direction === 3) {
-	return 1;
-} else {
-	return 2;
-}
-}
-
-// returns the distance between two points
-function getDistance(x1, y1, x2, y2) {
-return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-}
-
 function movePacman() {
 	if (PACMAN_MOVING === false) { 
 		PACMAN_MOVING = true;
@@ -254,7 +205,7 @@ function movePacman() {
 	} else { 
 	
 		changePacmanDirection();
-		
+
 		if (canMovePacman(PACMAN_DIRECTION)) { 
 			erasePacman();
 
@@ -290,39 +241,104 @@ function movePacman() {
 				testFruitsPacman();
 			}
 		} else { 
-			PACMAN_DIRECTION = oneDirection();
+			PACMAN_DIRECTION = onePacmanDirection(PACMAN_POSITION_X, PACMAN_POSITION_Y, GHOST_BLINKY_POSITION_X, GHOST_BLINKY_POSITION_Y, PACMAN_DIRECTION);
+			console.log("BANGGA")
 		}
 	}
 }
 
-function changePacmanDirection() { 
-	var direction = PACMAN_DIRECTION
-	var pacmanX = PACMAN_POSITION_X
-	var pacmanY = PACMAN_POSITION_Y
+function changePacmanDirectionAvoidingGhost() {
+	var pacmanX = PACMAN_POSITION_X;
+	var pacmanY = PACMAN_POSITION_Y;
+	var ghostX = GHOST_BLINKY_POSITION_X;
+	var ghostY = GHOST_BLINKY_POSITION_Y;
+	var ghostDirection = GHOST_BLINKY_DIRECTION;
+	var distanceX = Math.abs(pacmanX - ghostX);
+	var distanceY = Math.abs(pacmanY - ghostY);
 	
-	var tryDirection = onePacmanDirection(pacmanX, pacmanY, ghostX, ghostY, direction);
-
-	if (pacmanX != 276 && pacmanX != 258) { 
-		var ghostX = GHOST_BLINKY_POSITION_X;
-		var ghostY = GHOST_BLINKY_POSITION_Y;
-
-		// Calculate the distances between Pacman and the ghost in all possible directions
-		var distances = {
-			1: Math.sqrt(Math.pow(pacmanX + PACMAN_POSITION_STEP - ghostX, 2) + Math.pow(pacmanY - ghostY, 2)),
-			2: Math.sqrt(Math.pow(pacmanX - ghostX, 2) + Math.pow(pacmanY + PACMAN_POSITION_STEP - ghostY, 2)),
-			3: Math.sqrt(Math.pow(pacmanX - PACMAN_POSITION_STEP - ghostX, 2) + Math.pow(pacmanY - ghostY, 2)),
-			4: Math.sqrt(Math.pow(pacmanX - ghostX, 2) + Math.pow(pacmanY - PACMAN_POSITION_STEP - ghostY, 2)),
-		};
-
-		// Choose the direction that leads to the farthest distance
-		var maxDistance = Math.max.apply(null, Object.values(distances));
-		tryDirection = parseInt(Object.keys(distances).find(key => distances[key] === maxDistance));
+	if (distanceX > PACMAN_AVOID_DISTANCE && distanceY > PACMAN_AVOID_DISTANCE) {
+	  // Ghost is too far away, use oneDirection()
+	  PACMAN_DIRECTION = oneDirection();
+	} else {
+	  // Ghost is too close, try to avoid it
+	  var possibleDirections = [1, 2, 3, 4];
+	  var bestDirection = PACMAN_DIRECTION;
+	  var bestDistance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+	  
+	  for (var i = 0; i < possibleDirections.length; i++) {
+		var direction = possibleDirections[i];
+		if (canMovePacman(direction) && (direction != ghostDirection - 2 && direction != ghostDirection + 2)) {
+		  var newX = pacmanX;
+		  var newY = pacmanY;
+		//   if (direction === 1) {
+		// 	newX += PACMAN_POSITION_STEP;
+		//   } else if (direction === 2) {
+		// 	newY += PACMAN_POSITION_STEP;
+		//   } else if (direction === 3) {
+		// 	newX -= PACMAN_POSITION_STEP;
+		//   } else if (direction === 4) {
+		// 	newY -= PACMAN_POSITION_STEP;
+		//   }
+		  var newDistanceX = Math.abs(newX - ghostX);
+		  var newDistanceY = Math.abs(newY - ghostY);
+		  var newDistance = Math.sqrt(Math.pow(newDistanceX, 2) + Math.pow(newDistanceY, 2));
+		  if (newDistance > bestDistance) {
+			bestDirection = direction;
+			bestDistance = newDistance;
+		  }
+		}
+	  }
+	  
+	  PACMAN_DIRECTION = bestDirection;
 	}
+  }
 
-	if (canMovePacman(tryDirection)) { 
-		PACMAN_DIRECTION = tryDirection;
-	}
+
+
+function changePacmanDirection() {
+    var direction = PACMAN_DIRECTION;
+    var pacmanX = PACMAN_POSITION_X;
+    var pacmanY = PACMAN_POSITION_Y;
+    var ghostX = GHOST_BLINKY_POSITION_X;
+    var ghostY = GHOST_BLINKY_POSITION_Y;
+
+    // Calculate the distance between Pacman and the ghost
+    var distance = Math.sqrt(Math.pow(pacmanX - ghostX, 2) + Math.pow(pacmanY - ghostY, 2));
+
+    // If the ghost is too far away, choose a random direction
+    if (distance > PACMAN_AVOID_DISTANCE) {
+        var tryDirection = onePacmanDirection(pacmanX, pacmanY, ghostX, ghostY, direction);
+        if (canMovePacman(tryDirection)) {
+            PACMAN_DIRECTION = tryDirection;
+        }
+        return;
+    }
+
+    // Calculate the coordinates of the tiles adjacent to Pacman
+    var leftTile = { x: pacmanX - PACMAN_POSITION_STEP, y: pacmanY };
+    var rightTile = { x: pacmanX + PACMAN_POSITION_STEP, y: pacmanY };
+    var upTile = { x: pacmanX, y: pacmanY - PACMAN_POSITION_STEP };
+    var downTile = { x: pacmanX, y: pacmanY + PACMAN_POSITION_STEP };
+
+    // Calculate the distance between Pacman and each adjacent tile
+    var leftDistance = Math.sqrt(Math.pow(leftTile.x - ghostX, 2) + Math.pow(leftTile.y - ghostY, 2));
+    var rightDistance = Math.sqrt(Math.pow(rightTile.x - ghostX, 2) + Math.pow(rightTile.y - ghostY, 2));
+    var upDistance = Math.sqrt(Math.pow(upTile.x - ghostX, 2) + Math.pow(upTile.y - ghostY, 2));
+    var downDistance = Math.sqrt(Math.pow(downTile.x - ghostX, 2) + Math.pow(downTile.y - ghostY, 2));
+
+    // Choose the direction that maximizes the distance to the ghost
+    var maxDistance = Math.max(leftDistance, rightDistance, upDistance, downDistance);
+    if (maxDistance === leftDistance && canMovePacman(3)) {
+        PACMAN_DIRECTION = 3;
+    } else if (maxDistance === rightDistance && canMovePacman(1)) {
+        PACMAN_DIRECTION = 1;
+    } else if (maxDistance === upDistance && canMovePacman(4)) {
+        PACMAN_DIRECTION = 4;
+    } else if (maxDistance === downDistance && canMovePacman(2)) {
+        PACMAN_DIRECTION = 2;
+    }
 }
+
 
 function onePacmanDirection(pacmanX, pacmanY, ghostX, ghostY, currentDirection) { 
 	var distances = [];
