@@ -4,6 +4,7 @@ var GHOST_BLINKY_POSITION_Y = 204;
 var GHOST_BLINKY_DIRECTION = 1;
 var GHOST_BLINKY_COLOR = "#ed1b24";
 var GHOST_BLINKY_MOVING_TIMER = -1;
+var GHOST_BLINKY_MOVING_SPEED = 15;
 var GHOST_BLINKY_MOVING = false;
 var GHOST_BLINKY_BODY_STATE = 0;
 var GHOST_BLINKY_STATE = 0;
@@ -11,6 +12,9 @@ var GHOST_BLINKY_EAT_TIMER = null;
 var GHOST_BLINKY_AFFRAID_TIMER = null;
 var GHOST_BLINKY_AFFRAID_STATE = 0;
 var GHOST_BLINKY_TUNNEL = false;
+var GHOST_BLINKY_DIRECTION_TRY = -1;
+var GHOST_BLINKY_DIRECTION_TRY_TIMER = null;
+var GHOST_BLINKY_DIRECTION_TRY_CANCEL = 1000;
 
 var GHOST_PINKY_CANVAS_CONTEXT = null;
 var GHOST_PINKY_POSITION_X = 276;
@@ -67,9 +71,9 @@ var GHOST_BODY_STATE_MAX = 6;
 
 function initGhosts() { 
 	initGhost('blinky');
-	initGhost('pinky');
-	initGhost('inky');
-	initGhost('clyde');
+	// initGhost('pinky');
+	// initGhost('inky');
+	// initGhost('clyde');
 }
 function initGhost(ghost) { 
 	var canvas = document.getElementById('canvas-ghost-' + ghost);
@@ -132,9 +136,9 @@ function getGhostCanevasContext(ghost) {
 
 function drawGhosts() { 
 	drawGhost("blinky");
-	drawGhost('pinky');
-	drawGhost('inky');
-	drawGhost("clyde");
+	// drawGhost('pinky');
+	// drawGhost('inky');
+	// drawGhost("clyde");
 }
 function drawGhost(ghost) { 
 
@@ -163,9 +167,9 @@ function affraidGhosts() {
 	SCORE_GHOST_COMBO = 200;
 
 	affraidGhost("blinky");
-	affraidGhost("pinky");
-	affraidGhost("inky");
-	affraidGhost("clyde");
+	// affraidGhost("pinky");
+	// affraidGhost("inky");
+	// affraidGhost("clyde");
 }
 function affraidGhost(ghost) { 
 	if ( eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER !== null') ) { 
@@ -254,14 +258,27 @@ function cancelEatGhost(ghost) {
 	}
 }
 
-function moveGhosts() { 
-	moveGhost("blinky");
-	moveGhost("pinky");
-	moveGhost("inky");
-	moveGhost("clyde");
+function tryMoveGhost(direction) { 
+	GHOST_BLINKY_DIRECTION_TRY = direction;
+	GHOST_BLINKY_DIRECTION_TRY_TIMER = new Timer('tryMoveGhostCancel()', GHOST_BLINKY_DIRECTION_TRY_CANCEL);
 }
-function moveGhost(ghost) {
 
+function tryMoveGhostCancel() { 
+	if (GHOST_BLINKY_DIRECTION_TRY_TIMER != null) { 
+		GHOST_BLINKY_DIRECTION_TRY_TIMER.cancel();
+		GHOST_BLINKY_DIRECTION_TRY = -1;
+		GHOST_BLINKY_DIRECTION_TRY_TIMER = null;
+	}
+}
+
+function moveGhosts() { 
+	moveGhost(1);
+	// moveGhost("pinky");
+	// moveGhost("inky");
+	// moveGhost("clyde");
+}
+function moveGhost(direction) {
+	let ghost = 'blinky';
 	if (eval('GHOST_' + ghost.toUpperCase() + '_MOVING === false')) { 
 		eval('GHOST_' + ghost.toUpperCase() + '_MOVING = true;');
 
@@ -277,10 +294,16 @@ function moveGhost(ghost) {
 		} else { 
 			speed =  GHOST_EAT_MOVING_SPEED;
 		}
-		eval('GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER = setInterval("moveGhost(\'' + ghost + '\')", ' + speed + ');');
+		eval('GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER = setInterval("moveGhost(\'' + ghost + '\')", ' + GHOST_MOVING_SPEED + ');');
+		// eval('GHOST_' + ghost.toUpperCase() + '_MOVING_TIMER = setInterval("moveGhost(\'' + ghost + '\')", ' + speed + ');');
 	} else { 
-	
-		changeDirection(ghost);
+		var directionTry = direction;
+		var quarterChangeDirection = false;
+		
+		if (!directionTry && GHOST_BLINKY_DIRECTION_TRY != -1) { 
+			directionTry = GHOST_BLINKY_DIRECTION_TRY;
+		}
+		// changeDirection(ghost);
 		
 		if ( eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER !== null')) { 
 			var remain = eval('GHOST_' + ghost.toUpperCase() + '_AFFRAID_TIMER.remain();');
@@ -291,43 +314,90 @@ function moveGhost(ghost) {
 			}
 		}
 		
-		if (canMoveGhost(ghost)) { 
-			eraseGhost(ghost);
-						
-			if (eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE < GHOST_BODY_STATE_MAX')) { 
-				eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE ++;');
-			} else { 
-				eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE = 0;');
-			}
-						
-			if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 1') ) { 
-				eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X += GHOST_POSITION_STEP;');
-			} else if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 2') ) { 
-				eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y += GHOST_POSITION_STEP;');
-			} else if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 3') ) { 
-				eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X -= GHOST_POSITION_STEP;');
-			} else if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 4') ) { 
-				eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y -= GHOST_POSITION_STEP;');
-			}
-			
-			if ( eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X === 2') && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y === 258') ) { 
-				eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X = 548;');
-				eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y = 258;');
-			} else if ( eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X === 548') && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y === 258') ) { 
-				eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X = 2;');
-				eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y = 258;');
-			}
-			
-			drawGhost(ghost);
-			
-			if (eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE === 3') && eval('GHOST_' + ghost.toUpperCase() + '_STATE != -1')) { 
-				if ( !PACMAN_MOVING ) { 
-					testGhostPacman(ghost);
+		if ((!directionTry || GHOST_BLINKY_DIRECTION !== directionTry)) {
+			if (directionTry) { 
+				if (canMoveGhost(ghost, directionTry)) { 
+					if (GHOST_BLINKY_DIRECTION + 1 === directionTry || GHOST_BLINKY_DIRECTION - 1 === directionTry || GHOST_BLINKY_DIRECTION + 1 === directionTry || (GHOST_BLINKY_DIRECTION === 4 && directionTry === 1) || (GHOST_BLINKY_DIRECTION === 1 && directionTry === 4) ) { 
+						quarterChangeDirection = true;
+					}
+					GHOST_BLINKY_DIRECTION = directionTry;
+					tryMoveGhostCancel();
+				} else { 
+					if (directionTry !== GHOST_BLINKY_DIRECTION_TRY) { 
+						tryMoveGhostCancel();
+					}
+					if (GHOST_BLINKY_DIRECTION_TRY === -1) { 
+						tryMoveGhost(directionTry);
+					}
 				}
-				testGhostTunnel(ghost);
 			}
-		} else { 
-			eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION = oneDirection();');
+
+			if (canMoveGhost(ghost, GHOST_BLINKY_DIRECTION)) { 
+				eraseGhost(ghost);
+							
+				var speedUp = 0;
+				if (quarterChangeDirection) { 
+					speedUp = 6;
+				}
+
+				// if (eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE < GHOST_BODY_STATE_MAX')) { 
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE ++;');
+				// } else { 
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE = 0;');
+				// }
+							
+				// if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 1') ) { 
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X += GHOST_POSITION_STEP + ' + speedUp);
+				// } else if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 2') ) { 
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y += GHOST_POSITION_STEP + ' + speedUp);
+				// } else if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 3') ) { 
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X -= GHOST_POSITION_STEP + ' + speedUp);
+				// } else if ( eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION === 4') ) { 
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y -= GHOST_POSITION_STEP + ' + speedUp);
+				// }
+				
+				// if ( eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X === 2') && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y === 258') ) { 
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X = 548;');
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y = 258;');
+				// } else if ( eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X === 548') && eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y === 258') ) { 
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_X = 2;');
+				// 	eval('GHOST_' + ghost.toUpperCase() + '_POSITION_Y = 258;');
+				// }
+				
+				if ( GHOST_BLINKY_DIRECTION === 1 ) { 
+					GHOST_BLINKY_POSITION_X += GHOST_POSITION_STEP + speedUp;
+				} else if ( GHOST_BLINKY_DIRECTION === 2 ) { 
+					GHOST_BLINKY_POSITION_Y += GHOST_POSITION_STEP + speedUp;
+				} else if ( GHOST_BLINKY_DIRECTION === 3 ) { 
+					GHOST_BLINKY_POSITION_X -= GHOST_POSITION_STEP + speedUp;
+				} else if ( GHOST_BLINKY_DIRECTION === 4 ) { 
+					GHOST_BLINKY_POSITION_Y -= (GHOST_POSITION_STEP + speedUp);
+				}
+				
+				if ( GHOST_BLINKY_POSITION_X === 2 && GHOST_BLINKY_POSITION_Y === 258 ) { 
+					GHOST_BLINKY_POSITION_X = 548;
+					GHOST_BLINKY_POSITION_Y = 258;
+				} else if ( GHOST_BLINKY_POSITION_X === 548 && GHOST_BLINKY_POSITION_Y === 258 ) { 
+					GHOST_BLINKY_POSITION_X = 2;
+					GHOST_BLINKY_POSITION_Y = 258;
+				}
+
+				drawGhost(ghost);
+				
+				if (eval('GHOST_' + ghost.toUpperCase() + '_BODY_STATE === 3') && eval('GHOST_' + ghost.toUpperCase() + '_STATE != -1')) { 
+					if ( !PACMAN_MOVING ) { 
+						testGhostPacman(ghost);
+					}
+					testGhostTunnel(ghost);
+				}
+			} else {
+				// stopGhost(ghost) 
+				// eval('GHOST_' + ghost.toUpperCase() + '_DIRECTION = oneDirection();');
+				
+				drawGhost(ghost);
+			}
+		}else if (direction && GHOST_BLINKY_DIRECTION === direction) { 
+			tryMoveGhostCancel();
 		}
 	}
 }
@@ -478,18 +548,25 @@ function eraseGhost(ghost) {
 function eraseGhosts() { 
 
 	eraseGhost('blinky');
-	eraseGhost('pinky');
-	eraseGhost('inky');
-	eraseGhost('clyde');
+	// eraseGhost('pinky');
+	// eraseGhost('inky');
+	// eraseGhost('clyde');
 }
 
 function canMoveGhost(ghost, direction) { 
 	if (!direction) { 
-		eval('var direction = GHOST_' + ghost.toUpperCase() + '_DIRECTION');
+		var direction = GHOST_BLINKY_DIRECTION
+		// eval('var direction = GHOST_BLINKY_DIRECTION');
 	}
-	eval('var positionX = GHOST_' + ghost.toUpperCase() + '_POSITION_X');
-	eval('var positionY = GHOST_' + ghost.toUpperCase() + '_POSITION_Y');
-	eval('var state = GHOST_' + ghost.toUpperCase() + '_STATE');
+	var positionX = GHOST_BLINKY_POSITION_X;
+	var positionY = GHOST_BLINKY_POSITION_Y;
+	var state = GHOST_BLINKY_STATE;
+	// if (!direction) { 
+	// 	eval('var direction = GHOST_' + ghost.toUpperCase() + '_DIRECTION');
+	// }
+	// eval('var positionX = GHOST_' + ghost.toUpperCase() + '_POSITION_X');
+	// eval('var positionY = GHOST_' + ghost.toUpperCase() + '_POSITION_Y');
+	// eval('var state = GHOST_' + ghost.toUpperCase() + '_STATE');
 	
 	if (positionX === 276 && positionY === 204 && direction === 2 && state === 0) return false;
 
@@ -554,9 +631,9 @@ function stopGhost(ghost) {
 }
 function stopGhosts() { 
 	stopGhost('blinky');
-	stopGhost('pinky');
-	stopGhost('inky');
-	stopGhost('clyde');
+	// stopGhost('pinky');
+	// stopGhost('inky');
+	// stopGhost('clyde');
 }
 
 function pauseGhost(ghost) { 
@@ -574,9 +651,9 @@ function pauseGhost(ghost) {
 }
 function pauseGhosts() { 
 	pauseGhost('blinky');
-	pauseGhost('pinky');
-	pauseGhost('inky');
-	pauseGhost('clyde');
+	// pauseGhost('pinky');
+	// pauseGhost('inky');
+	// pauseGhost('clyde');
 }
 
 function resumeGhost(ghost) { 
@@ -589,9 +666,9 @@ function resumeGhost(ghost) {
 }
 function resumeGhosts() { 
 	resumeGhost('blinky');
-	resumeGhost('pinky');
-	resumeGhost('inky');
-	resumeGhost('clyde');
+	// resumeGhost('pinky');
+	// resumeGhost('inky');
+	// resumeGhost('clyde');
 }
 
 function drawHelperGhost(ctx, x, y, d, b, s, a) { 
